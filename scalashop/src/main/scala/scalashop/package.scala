@@ -40,7 +40,27 @@ package object scalashop {
   /** Computes the blurred RGBA value of a single pixel of the input image. */
   def boxBlurKernel(src: Img, x: Int, y: Int, radius: Int): RGBA = {
     // TODO implement using while loops
-    ???
+    val pixel = src.apply(x, y)
+
+    val leftTopCoordinate = (x - radius, y - radius)
+    val rightDownCoordinate = (x + radius, y + radius)
+
+    val rgbaOfPixels = for {
+      byX <- leftTopCoordinate._1 to rightDownCoordinate._1 // if byX != x
+      byY <- leftTopCoordinate._2 to rightDownCoordinate._2 // if byY != y
+      clampedX = clamp(byX, 0, src.width)
+      clampedY = clamp(byY, 0, src.height)
+      currentPixel = src.apply(clampedX, clampedY)
+    } yield (red(currentPixel), green(currentPixel), blue(currentPixel), alpha(currentPixel))
+
+    val sum = rgbaOfPixels.foldLeft((0, 0, 0, 0))( (acc, v) => {
+      (acc._1 + v._1, acc._2 + v._2, acc._3 + v._3, acc._4 + v._4)
+    })
+
+    rgba(sum._1 / rgbaOfPixels.length,
+         sum._2 / rgbaOfPixels.length,
+         sum._3 / rgbaOfPixels.length,
+         sum._4 / rgbaOfPixels.length)
   }
 
 }
