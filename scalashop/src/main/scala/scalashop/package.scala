@@ -40,25 +40,36 @@ package object scalashop {
   /** Computes the blurred RGBA value of a single pixel of the input image. */
   def boxBlurKernel(src: Img, x: Int, y: Int, radius: Int): RGBA = {
     // TODO implement using while loops
-    val pixel = src.apply(x, y)
-
     val leftTopCoordinate = (clamp(x - radius, 0, src.width - 1), clamp(y - radius, 0, src.height - 1))
     val rightDownCoordinate = (clamp(x + radius, 0, src.width - 1), clamp(y + radius, 0, src.height - 1))
 
-    val rgbaOfPixels = for {
-      byX <- leftTopCoordinate._1 to rightDownCoordinate._1 //if byX != x
-      byY <- leftTopCoordinate._2 to rightDownCoordinate._2 //if byY != y
-      currentPixel = src.apply(byX, byY)
-    } yield (red(currentPixel), green(currentPixel), blue(currentPixel), alpha(currentPixel))
+    var rSum = 0
+    var gSum = 0
+    var bSum = 0
+    var aSum = 0
 
-    val sum = rgbaOfPixels.foldLeft((0, 0, 0, 0))( (acc, v) => {
-      (acc._1 + v._1, acc._2 + v._2, acc._3 + v._3, acc._4 + v._4)
-    })
+    var length = 0
 
-    rgba(sum._1 / rgbaOfPixels.length,
-         sum._2 / rgbaOfPixels.length,
-         sum._3 / rgbaOfPixels.length,
-         sum._4 / rgbaOfPixels.length)
+    var byX = leftTopCoordinate._1
+    while (byX <= rightDownCoordinate._1) {
+      var byY = leftTopCoordinate._2
+      while (byY <= rightDownCoordinate._2) {
+        val currentPixel = src.apply(byX, byY)
+
+        rSum += red(currentPixel)
+        gSum += green(currentPixel)
+        bSum += blue(currentPixel)
+        aSum += alpha(currentPixel)
+
+        byY += 1
+        length += 1
+      }
+      byX += 1
+    }
+    rgba(rSum / length,
+         gSum / length,
+         bSum / length,
+         aSum / length)
   }
 
 }
