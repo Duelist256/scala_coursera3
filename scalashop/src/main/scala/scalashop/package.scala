@@ -42,15 +42,13 @@ package object scalashop {
     // TODO implement using while loops
     val pixel = src.apply(x, y)
 
-    val leftTopCoordinate = (x - radius, y - radius)
-    val rightDownCoordinate = (x + radius, y + radius)
+    val leftTopCoordinate = (clamp(x - radius, 0, src.width - 1), clamp(y - radius, 0, src.height - 1))
+    val rightDownCoordinate = (clamp(x + radius, 0, src.width - 1), clamp(y + radius, 0, src.height - 1))
 
     val rgbaOfPixels = for {
-      byX <- leftTopCoordinate._1 to rightDownCoordinate._1 // if byX != x
-      byY <- leftTopCoordinate._2 to rightDownCoordinate._2 // if byY != y
-      clampedX = clamp(byX, 0, src.width)
-      clampedY = clamp(byY, 0, src.height)
-      currentPixel = src.apply(clampedX, clampedY)
+      byX <- leftTopCoordinate._1 to rightDownCoordinate._1 //if byX != x
+      byY <- leftTopCoordinate._2 to rightDownCoordinate._2 //if byY != y
+      currentPixel = src.apply(byX, byY)
     } yield (red(currentPixel), green(currentPixel), blue(currentPixel), alpha(currentPixel))
 
     val sum = rgbaOfPixels.foldLeft((0, 0, 0, 0))( (acc, v) => {
