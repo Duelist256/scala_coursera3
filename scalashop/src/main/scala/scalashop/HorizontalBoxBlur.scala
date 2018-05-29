@@ -55,33 +55,21 @@ object HorizontalBoxBlur {
     * rows.
     */
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
-    // TODO implement using the `task` construct and the `blur` method
-
-    // 3x3, 1 task, 1 radius
-    val step = src.height / numTasks // 3
+    val step = Math.max(src.height / numTasks, 1)
 
     if (step != 0) {
       val starts = 0 until src.height by step
-      val ends = step - 1 to src.height by step
 
       var startIdx = 0
-      var endIdx = 0
 
-      while (startIdx < starts.length && endIdx < ends.length) {
+      while (startIdx < starts.length) {
         val t = task {
-          blur(src, dst, starts(startIdx), ends(endIdx), radius)
+          blur(src, dst, starts(startIdx), starts(startIdx) + step, radius)
         }
         t.join()
         startIdx += 1
-        endIdx += 1
       }
-    } else {
-      val t = task {
-        blur(src, dst, 0, src.height, radius)
-      }
-      t.join()
     }
-
   }
 
 }

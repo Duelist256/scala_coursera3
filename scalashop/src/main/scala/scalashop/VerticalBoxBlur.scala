@@ -56,31 +56,21 @@ object VerticalBoxBlur {
    *  columns.
    */
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
-    // TODO implement using the `task` construct and the `blur` method
-    val step = src.width / numTasks
+    val step = Math.max(src.width / numTasks, 1)
 
     if (step != 0) {
       val starts = 0 until src.width by step
-      val ends = step - 1 to src.width by step
 
       var startIdx = 0
-      var endIdx = 0
 
-      while (startIdx < starts.length && endIdx < ends.length) {
+      while (startIdx < starts.length) {
         val t = task {
-          blur(src, dst, starts(startIdx), ends(endIdx), radius)
+          blur(src, dst, starts(startIdx), starts(startIdx) + step, radius)
         }
         t.join()
         startIdx += 1
-        endIdx += 1
       }
-    } else {
-      val t = task {
-        blur(src, dst, 0, src.width, radius)
-      }
-      t.join()
     }
-
   }
 
 }
