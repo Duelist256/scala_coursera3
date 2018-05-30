@@ -26,7 +26,7 @@ class ParallelCountChangeSuite extends FunSuite {
   test("countChange should return 1 when money == 0") {
     def check(coins: List[Int]) = 
       assert(countChange(0, coins) == 1,
-        s"countChang(0, _) should be 1")
+        s"countChang(0, $coins) should be 1")
 
     check(List())
     check(List(1, 2, 3))

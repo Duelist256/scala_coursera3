@@ -46,7 +46,9 @@ object ParallelCountChange {
    *  coins for the specified amount of money.
    */
   def countChange(money: Int, coins: List[Int]): Int = {
-    ???
+    if (money == 0) 1
+    else if (money < 0 || coins.isEmpty) 0
+    else countChange(money - coins.head, coins) + countChange(money, coins.tail)
   }
 
   type Threshold = (Int, List[Int]) => Boolean
@@ -54,8 +56,14 @@ object ParallelCountChange {
   /** In parallel, counts the number of ways change can be made from the
    *  specified list of coins for the specified amount of money.
    */
+  // FIXME: is that correct?
   def parCountChange(money: Int, coins: List[Int], threshold: Threshold): Int = {
-    ???
+    if (money == 0) 1
+    else if (money < 0 || coins.isEmpty) 0
+    else {
+      val result = parallel(parCountChange(money - coins.head, coins, threshold), parCountChange(money, coins.tail, threshold))
+      result._1 + result._2
+    }
   }
 
   /** Threshold heuristic based on the starting money. */
