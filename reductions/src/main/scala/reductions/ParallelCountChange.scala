@@ -58,7 +58,8 @@ object ParallelCountChange {
    */
   // FIXME: is that correct?
   def parCountChange(money: Int, coins: List[Int], threshold: Threshold): Int = {
-    if (money < 0 || coins.isEmpty) 0
+    if (money == 0) 1
+    else if (money < 0 || coins.isEmpty) 0
     else if (threshold(money, coins)) countChange(money, coins)
     else {
       val (left, right) =

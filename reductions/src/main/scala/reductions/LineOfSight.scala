@@ -55,8 +55,8 @@ object LineOfSight {
   /** Traverses the specified part of the array and returns the maximum angle.
    */
   def upsweepSequential(input: Array[Float], from: Int, until: Int): Float = {
-    var maxAngle: Float = Float.MinValue
-    for (i <- from until until) {
+    var maxAngle: Float = if (input.length > from) input(from) / from else  Float.MinValue
+    for (i <- from + 1 until until) {
       maxAngle = max(input(i) / i, maxAngle)
     }
     maxAngle
@@ -73,10 +73,10 @@ object LineOfSight {
   def upsweep(input: Array[Float], from: Int, end: Int,
     threshold: Int): Tree = {
     val length = end - from
-    if (length < threshold) Leaf(from, end, upsweepSequential(input, from, end))
+    if (length <= threshold) Leaf(from, end, upsweepSequential(input, from, end))
     else {
-      val mid = length / 2
-      val (left, right) = parallel(upsweep(input, from, mid, threshold), upsweep(input, mid + 1, end, threshold))
+      val mid = from + (end - from) / 2
+      val (left, right) = parallel(upsweep(input, from, mid, threshold), upsweep(input, mid, end, threshold))
       Node(left, right)
     }
   }

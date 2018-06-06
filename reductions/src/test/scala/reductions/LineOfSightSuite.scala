@@ -23,6 +23,15 @@ class LineOfSightSuite extends FunSuite {
     assert(res == 4f)
   }
 
+//  test("upsweep should correctly compute the tree on the indices 1 until 5 of a 5 element array for threshold 1") {
+//    val res = upsweep(Array[Float](0f, 1f, 2f, 3f, 4f, 5f), 1, 5, 1)
+//    assert()
+//    // from = 1, end = 5
+//    // length = 5 - 1 = 4
+//    // mid = 2
+//    // par (from 1 to 2); par (from 3 to 5)
+//  }
+
 
   test("downsweepSequential should correctly handle a 4 element array when the starting angle is zero") {
     val output = new Array[Float](4)

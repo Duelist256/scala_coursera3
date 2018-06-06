@@ -70,10 +70,10 @@ object ParallelParenthesesBalancing {
 
     def reduce(from: Int, until: Int): (Int, Int) = {
       val size = until - from
-      if (threshold <= size) traverse(from, until, 0, 0)
+      if (size <= threshold) traverse(from, until, 0, 0)
       else {
         val mid = size / 2
-        val ((a1, a2), (b1, b2)) = parallel(reduce(from, mid), reduce(mid + 1, until))
+        val ((a1, a2), (b1, b2)) = parallel(reduce(from, from + mid), reduce(from + mid, until))
         val min = Math.min(a1, b2)
         (a1 + b1 - min, a2 + b2 - min)
       }
