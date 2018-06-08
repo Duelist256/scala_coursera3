@@ -43,7 +43,8 @@ class KMeans {
   }
 
   def classify(points: GenSeq[Point], means: GenSeq[Point]): GenMap[Point, GenSeq[Point]] = {
-    ???
+    if (points.isEmpty) means.par.foldLeft(Map.empty[Point, GenSeq[Point]])((map, mean) => map + (mean -> List()))
+    else points.par.groupBy(point => findClosest(point, means))
   }
 
   def findAverage(oldMean: Point, points: GenSeq[Point]): Point = if (points.length == 0) oldMean else {
